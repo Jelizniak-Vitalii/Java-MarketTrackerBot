@@ -8,7 +8,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 @Configuration
-@ComponentScan("markettrackerbot1")
+@ComponentScan("com.telegram.markettrackerbot")
 public class AppConfig {
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfigurer() {
