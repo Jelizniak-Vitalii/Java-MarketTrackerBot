@@ -9,9 +9,7 @@ public abstract class UserRequestHandler {
 	public abstract MessageResponse handle(UserRequest dispatchRequest);
 
 	public boolean isCommand(Update update, String command) {
-		System.out.println(update.getMessage().getText());
-		return update.hasMessage() && update.getMessage().isCommand()
-			&& update.getMessage().getText().equals(command);
+    return update.hasMessage() && update.getMessage().getText().equals(command);
 	}
 
 	public boolean isTextMessage(Update update) {

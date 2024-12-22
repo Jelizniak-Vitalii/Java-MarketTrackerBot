@@ -14,7 +14,8 @@ public class KeyboardHelper {
 	public ReplyKeyboardMarkup buildMainMenu() {
 		List<KeyboardButton> buttons = List.of(
 			new KeyboardButton(FIND_STOCK),
-			new KeyboardButton(WATCH_LIST));
+			new KeyboardButton(WATCH_LIST)
+    );
 
 		return ReplyKeyboardMarkup.builder()
 			.keyboard(List.of(new KeyboardRow(buttons)))

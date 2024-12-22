@@ -1,14 +1,16 @@
 package com.telegram.markettrackerbot.models;
 
+import com.telegram.markettrackerbot.enums.ChatState;
+
 public class UserSession {
-	private String state;
+	private ChatState state;
 	private Long chatId;
 	private String city;
 	private String text;
 
 	public UserSession() {}
 
-	public UserSession(Long chatId, String text, String state, String city) {
+	public UserSession(Long chatId, String text, ChatState state, String city) {
 		this.chatId = chatId;
 		this.state = state;
 		this.text = text;
@@ -23,11 +25,11 @@ public class UserSession {
 		this.chatId = chatId;
 	}
 
-	public String getState() {
+	public ChatState getState() {
 		return state;
 	}
 
-	public void setState(String state) {
+	public void setState(ChatState state) {
 		this.state = state;
 	}
 
@@ -48,12 +50,12 @@ public class UserSession {
 	}
 
 	public static class Builder {
-		private String state;
+		private ChatState state;
 		private Long chatId;
 		private String city;
 		private String text;
 
-		public Builder state(String state) {
+		public Builder state(ChatState state) {
 			this.state = state;
 			return this;
 		}

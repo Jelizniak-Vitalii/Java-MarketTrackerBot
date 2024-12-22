@@ -8,14 +8,15 @@ import java.util.Map;
 
 @Service
 public class UserSessionService {
-	private Map<Long, UserSession> userSessionMap = new HashMap<>();
+	private final Map<Long, UserSession> userSessionMap = new HashMap<>();
 
-	public UserSession getSession(Long chatId) {
+	public UserSession getSession(Long chatId, String text) {
 		return userSessionMap.getOrDefault(
 			chatId,
 			UserSession
 				.builder()
 				.chatId(chatId)
+        .text(text)
 				.build()
 		);
 	}

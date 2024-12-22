@@ -1,5 +1,6 @@
 package com.telegram.markettrackerbot.bot;
 
+import com.telegram.markettrackerbot.models.UserRequestInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,8 @@ import com.telegram.markettrackerbot.services.DispatcherService;
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 	private static final Logger logger = LoggerFactory.getLogger(com.telegram.markettrackerbot.bot.TelegramBot.class);
-	private final UserSessionService userSessionService;
+
+  private final UserSessionService userSessionService;
 	private final DispatcherService dispatcherService;
 
 	@Value("${bot.token}")
@@ -32,8 +34,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
 	@Autowired
 	public TelegramBot(
-			UserSessionService userSessionService,
-			DispatcherService dispatcherService
+		UserSessionService userSessionService,
+		DispatcherService dispatcherService
 	) {
 		this.userSessionService = userSessionService;
 		this.dispatcherService = dispatcherService;
@@ -52,42 +54,40 @@ public class TelegramBot extends TelegramLongPollingBot {
 	@Override
 	public void onUpdateReceived(Update update) {
 		try {
-			String textFromUser = update.getMessage().getText();
-			Long userId = update.getMessage().getFrom().getId();
-			Long chatId = update.getMessage().getChatId();
-			String userName = update.getMessage().getFrom().getUserName();
-			UserSession session = userSessionService.getSession(chatId);
+      UserRequestInfo userRequestInfo = dispatcherService.getUserRequestInfo(update);
+			UserSession session = userSessionService.getSession(userRequestInfo.getChatId(), userRequestInfo.getText());
 
-			String loggedMessage = "Message from: " + userId + " - " + userName + ", text: " + textFromUser;
+			String loggedMessage = "Message from: " + userRequestInfo.getUserId() + " - " + userRequestInfo.getUserName() + ", text: " + userRequestInfo.getText();
 
 			logger.info(loggedMessage);
 
 			UserRequest userRequest = UserRequest
-					.builder()
-					.update(update)
-					.userSession(session)
-					.chatId(chatId)
-					.build();
+        .builder()
+        .update(update)
+        .userSession(session)
+        .chatId(userRequestInfo.getChatId())
+        .build();
 
 			MessageResponse response = dispatcherService.dispatch(userRequest);
 
 			SendMessage sendMessage = SendMessage.builder()
-					.chatId(chatId)
-					.text(response.getText())
-					.replyMarkup(response.getKeyboard())
-					.build();
+        .chatId(userRequestInfo.getChatId())
+        .text(response.getText())
+        .replyMarkup(response.getKeyboard())
+        .build();
+
+      sendMessage.setReplyMarkup(response.getInlineKeyboard());
 
 			this.sendApiMethod(sendMessage);
 		} catch (TelegramApiException e) {
-			logger.error("Error while send message: ", e);
-			throw new RuntimeException(e);
+      logger.error("Error while send message: ", e);
 		}
 	}
 
 	public void start() throws TelegramApiException {
-		TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+    try {
+      TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
 
-		try {
 			telegramBotsApi.registerBot(this);
 			logger.info("Telegram bot successfully started");
 		} catch (TelegramApiException e) {
