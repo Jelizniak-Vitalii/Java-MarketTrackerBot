@@ -10,13 +10,12 @@ import java.util.Map;
 public class UserSessionService {
 	private final Map<Long, UserSession> userSessionMap = new HashMap<>();
 
-	public UserSession getSession(Long chatId, String text) {
+	public UserSession getSession(Long chatId) {
 		return userSessionMap.getOrDefault(
 			chatId,
 			UserSession
 				.builder()
 				.chatId(chatId)
-        .text(text)
 				.build()
 		);
 	}

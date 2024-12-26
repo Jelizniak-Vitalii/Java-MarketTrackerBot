@@ -1,8 +1,8 @@
 package com.telegram.markettrackerbot.handlers;
 
+import org.telegram.telegrambots.meta.api.objects.Update;
 import com.telegram.markettrackerbot.models.MessageResponse;
 import com.telegram.markettrackerbot.models.UserRequest;
-import org.telegram.telegrambots.meta.api.objects.Update;
 
 public abstract class UserRequestHandler {
 	public abstract boolean isApplicable(UserRequest request);

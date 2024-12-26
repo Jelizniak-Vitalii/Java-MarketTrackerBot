@@ -46,23 +46,14 @@ public class EnteredFindStockHandler extends UserRequestHandler {
 
   @Override
   public MessageResponse handle(UserRequest request) {
-    try {
-      String response = this.stockHttpService.search(request.getUpdate().getMessage().getText());
-      JSONObject jsonObject = new JSONObject(response);
-      boolean isStockFound = jsonObject.has("stocks");
+    String response = this.stockHttpService.search(request.getUpdate().getMessage().getText());
+    JSONObject jsonObject = new JSONObject(response);
+    boolean isStockFound = jsonObject.has("stocks");
 
-      return new MessageResponse(
-        isStockFound ? STOCK_FOUND : STOCK_NOT_FOUND,
-        keyboardHelper.buildMainMenu(),
-        isStockFound ? stockService.getStockKeyboardMarkup(jsonObject) : null
-      );
-    } catch (Exception e) {
-      logger.error(e.getMessage());
-
-      return new MessageResponse(
-        STOCK_NOT_FOUND,
-        keyboardHelper.buildMainMenu()
-      );
-    }
+    return new MessageResponse(
+      isStockFound ? STOCK_FOUND : STOCK_NOT_FOUND,
+      keyboardHelper.buildMainMenu(),
+      isStockFound ? stockService.getStocksKeyboardMarkup(jsonObject) : null
+    );
   }
 }

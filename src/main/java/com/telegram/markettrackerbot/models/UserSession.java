@@ -7,14 +7,16 @@ public class UserSession {
 	private Long chatId;
 	private String city;
 	private String text;
+  private UserRequestInfo userRequestInfo;
 
 	public UserSession() {}
 
-	public UserSession(Long chatId, String text, ChatState state, String city) {
+	public UserSession(Long chatId, String text, ChatState state, String city, UserRequestInfo userRequestInfo) {
 		this.chatId = chatId;
 		this.state = state;
 		this.text = text;
 		this.city = city;
+    this.userRequestInfo = userRequestInfo;
 	}
 
 	public Long getChatId() {
@@ -49,11 +51,20 @@ public class UserSession {
 		this.text = text;
 	}
 
+  public UserRequestInfo getUserRequestInfo() {
+    return userRequestInfo;
+  }
+
+  public void setUserRequestInfo(UserRequestInfo userRequestInfo) {
+    this.userRequestInfo = userRequestInfo;
+  }
+
 	public static class Builder {
 		private ChatState state;
 		private Long chatId;
 		private String city;
 		private String text;
+    private UserRequestInfo userRequestInfo;
 
 		public Builder state(ChatState state) {
 			this.state = state;
@@ -75,8 +86,13 @@ public class UserSession {
 			return this;
 		}
 
+    public Builder userRequestInfo(UserRequestInfo userRequestInfo) {
+      this.userRequestInfo = userRequestInfo;
+      return this;
+    }
+
 		public UserSession build() {
-			return new UserSession(chatId, text, state, city);
+			return new UserSession(chatId, text, state, city, userRequestInfo);
 		}
 	}
 

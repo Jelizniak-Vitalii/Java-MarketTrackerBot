@@ -1,7 +1,9 @@
 package com.telegram.markettrackerbot.services;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,7 @@ public class DispatcherService {
 		this.keyboardHelper = keyboardHelper;
 	}
 
-	public MessageResponse dispatch(UserRequest userRequest) {
+	public MessageResponse dispatch(UserRequest userRequest) throws IOException {
 		for (UserRequestHandler userRequestHandler : handlers) {
 			if (userRequestHandler.isApplicable(userRequest)) {
 				return userRequestHandler.handle(userRequest);
@@ -41,11 +43,15 @@ public class DispatcherService {
   public UserRequestInfo getUserRequestInfo(Update update) {
     try {
       if (update.hasCallbackQuery()) {
+        JSONObject jsonObject = new JSONObject(update.getCallbackQuery().getData());
+
         return new UserRequestInfo(
           update.getCallbackQuery().getFrom().getId(),
           update.getCallbackQuery().getMessage().getChatId(),
           update.getCallbackQuery().getFrom().getUserName(),
-          update.getCallbackQuery().getData()
+          update.getCallbackQuery().getData(),
+          jsonObject.optString("action"),
+          jsonObject.optString("tickerId")
         );
       } else if (update.hasMessage()) {
         return new UserRequestInfo(
@@ -57,22 +63,9 @@ public class DispatcherService {
       }
     } catch (Exception e) {
       logger.error("Failed to extract update info: ", e);
+      return null;
     }
 
     return null;
   }
-
-//  public String getTickerIdFromCallback(Update update) {
-//    String data = update.getCallbackQuery().getData();
-//
-//    try {
-//      ObjectMapper objectMapper = new ObjectMapper();
-//      JsonNode jsonNode = objectMapper.readTree(data);
-//      System.out.println(data);
-//      return jsonNode.get("tickerId").asText();
-//    } catch (JsonProcessingException e) {
-//      logger.error("Ошибка при извлечении tickerId из callback data: ", e);
-//      return null;
-//    }
-//  }
 }
