@@ -8,6 +8,7 @@ import com.telegram.markettrackerbot.models.MessageResponse;
 import com.telegram.markettrackerbot.models.UserRequest;
 
 import static com.telegram.markettrackerbot.constants.Buttons.WATCH_LIST;
+import static com.telegram.markettrackerbot.constants.Messages.WATCH_LIST_EMPTY_MESSAGE;
 
 @Component
 public class GetWatchListHandler extends UserRequestHandler {
@@ -36,6 +37,6 @@ public class GetWatchListHandler extends UserRequestHandler {
     String[] watchList = this.userService.getStocks(request.getChatId());
     String message = this.stockService.getWatchListMessage(watchList);
 
-    return new MessageResponse(message, keyboardHelper.buildMainMenu());
+    return new MessageResponse(message.isEmpty() ? WATCH_LIST_EMPTY_MESSAGE : message, keyboardHelper.buildMainMenu());
   }
 }

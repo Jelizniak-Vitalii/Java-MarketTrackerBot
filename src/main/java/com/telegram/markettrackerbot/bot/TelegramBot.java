@@ -57,6 +57,10 @@ public class TelegramBot extends TelegramLongPollingBot {
 	public void onUpdateReceived(Update update) {
 		try {
       UserRequestInfo userRequestInfo = dispatcherService.getUserRequestInfo(update);
+
+      String loggedMessage = "Message from: " + userRequestInfo.getUserId() + " - " + userRequestInfo.getUserName() + ", text: " + userRequestInfo.getText();
+      logger.info(loggedMessage);
+
 			UserSession session = userSessionService.getSession(userRequestInfo.getChatId());
       session.setText(userRequestInfo.getText());
       session.setUserRequestInfo(userRequestInfo);
@@ -73,15 +77,10 @@ public class TelegramBot extends TelegramLongPollingBot {
 			SendMessage sendMessage = SendMessage.builder()
         .chatId(userRequestInfo.getChatId())
         .text(response.getText())
-        .replyMarkup(response.getKeyboard())
+        .replyMarkup(response.getInlineKeyboard() != null ? response.getInlineKeyboard() : response.getKeyboard())
         .build();
 
-      sendMessage.setReplyMarkup(response.getInlineKeyboard());
-
 			this.sendApiMethod(sendMessage);
-
-      String loggedMessage = "Message from: " + userRequestInfo.getUserId() + " - " + userRequestInfo.getUserName() + ", text: " + userRequestInfo.getText();
-      logger.info(loggedMessage);
 		} catch (TelegramApiException e) {
       logger.error("Error while send message: ", e);
 		} catch (IOException e) {
