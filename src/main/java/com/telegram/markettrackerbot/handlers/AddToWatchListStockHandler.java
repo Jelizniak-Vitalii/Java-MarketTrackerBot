@@ -1,7 +1,7 @@
 package com.telegram.markettrackerbot.handlers;
 
 import org.springframework.stereotype.Component;
-import com.telegram.markettrackerbot.database.pureSql.services.UserService;
+import com.telegram.markettrackerbot.database.DataBaseService;
 import com.telegram.markettrackerbot.helpers.KeyboardHelper;
 import com.telegram.markettrackerbot.models.MessageResponse;
 import com.telegram.markettrackerbot.models.UserRequest;
@@ -12,11 +12,11 @@ import static com.telegram.markettrackerbot.constants.Messages.STOCK_ADDED_TO_WA
 @Component
 public class AddToWatchListStockHandler extends UserRequestHandler {
   private final KeyboardHelper keyboardHelper;
-  private final UserService userService;
+  private final DataBaseService dataBaseService;
 
-  public AddToWatchListStockHandler(KeyboardHelper keyboardHelper, UserService userService) {
+  public AddToWatchListStockHandler(KeyboardHelper keyboardHelper, DataBaseService dataBaseService) {
     this.keyboardHelper = keyboardHelper;
-    this.userService = userService;
+    this.dataBaseService = dataBaseService;
   }
 
   @Override
@@ -27,7 +27,7 @@ public class AddToWatchListStockHandler extends UserRequestHandler {
 
   @Override
   public MessageResponse handle(UserRequest request) {
-    this.userService.addStock(request.getChatId(), request.getUserSession().getUserRequestInfo().getUserRequestAction().getTickerId());
+    this.dataBaseService.addStock(request.getChatId(), request.getUserSession().getUserRequestInfo().getUserRequestAction().getTickerId());
 
     return new MessageResponse(STOCK_ADDED_TO_WATCH_LIST, keyboardHelper.buildMainMenu());
   }

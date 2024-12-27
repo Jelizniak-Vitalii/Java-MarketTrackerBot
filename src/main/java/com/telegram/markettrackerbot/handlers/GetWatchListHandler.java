@@ -1,11 +1,11 @@
 package com.telegram.markettrackerbot.handlers;
 
 import org.springframework.stereotype.Component;
-import com.telegram.markettrackerbot.database.pureSql.services.UserService;
 import com.telegram.markettrackerbot.services.StockService;
 import com.telegram.markettrackerbot.helpers.KeyboardHelper;
 import com.telegram.markettrackerbot.models.MessageResponse;
 import com.telegram.markettrackerbot.models.UserRequest;
+import com.telegram.markettrackerbot.database.DataBaseService;
 
 import static com.telegram.markettrackerbot.constants.Buttons.WATCH_LIST;
 import static com.telegram.markettrackerbot.constants.Messages.WATCH_LIST_EMPTY_MESSAGE;
@@ -15,16 +15,16 @@ public class GetWatchListHandler extends UserRequestHandler {
   private final KeyboardHelper keyboardHelper;
 
   private final StockService stockService;
-  private final UserService userService;
+  private final DataBaseService dataBaseService;
 
   public GetWatchListHandler(
     KeyboardHelper keyboardHelper,
     StockService stockService,
-    UserService userService
+    DataBaseService dataBaseService
   ) {
     this.keyboardHelper = keyboardHelper;
     this.stockService = stockService;
-    this.userService = userService;
+    this.dataBaseService = dataBaseService;
   }
 
   @Override
@@ -34,7 +34,7 @@ public class GetWatchListHandler extends UserRequestHandler {
 
   @Override
   public MessageResponse handle(UserRequest request) {
-    String[] watchList = this.userService.getStocks(request.getChatId());
+    String[] watchList = this.dataBaseService.getStocks(request.getChatId());
     String message = this.stockService.getWatchListMessage(watchList);
 
     return new MessageResponse(message.isEmpty() ? WATCH_LIST_EMPTY_MESSAGE : message, keyboardHelper.buildMainMenu());

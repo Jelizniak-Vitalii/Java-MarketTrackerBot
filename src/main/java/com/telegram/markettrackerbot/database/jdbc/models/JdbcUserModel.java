@@ -1,23 +1,23 @@
-package com.telegram.markettrackerbot.database.pureSql.models;
+package com.telegram.markettrackerbot.database.jdbc.models;
 
 import java.sql.Timestamp;
 import java.util.List;
 
-public class UserModel {
+public class JdbcUserModel {
   private String name;
   private String username;
   private Long chatId;
   private Timestamp createdAt;
   private List<String> stocks;
 
-  public UserModel(Long chatId, String name, List<String> stocks) {
+  public JdbcUserModel(Long chatId, String name, List<String> stocks) {
     this.chatId = chatId;
     this.name = name;
     this.stocks = stocks;
   }
 
-  public UserModel(Long chatId, String name) {
-    this(chatId, name, List.of());  // По умолчанию пустой список
+  public JdbcUserModel(Long chatId, String name) {
+    this(chatId, name, List.of());
   }
 
   public String getName() {

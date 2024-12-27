@@ -1,25 +1,27 @@
-package com.telegram.markettrackerbot.database.pureSql.services;
+package com.telegram.markettrackerbot.database.jdbc.services;
 
 import java.io.IOException;
+
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.telegram.markettrackerbot.database.pureSql.models.UserModel;
-import com.telegram.markettrackerbot.database.pureSql.dao.UserModelDao;
+import com.telegram.markettrackerbot.database.AbstractDataBaseService;
+import com.telegram.markettrackerbot.database.jdbc.models.JdbcUserModel;
+import com.telegram.markettrackerbot.database.jdbc.dao.JdbcUserModelDao;
 
 @Service
-public class UserService {
-  private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+public class JdbcUserService extends AbstractDataBaseService {
+  private static final Logger logger = LoggerFactory.getLogger(JdbcUserService.class);
 
-  private final UserModelDao userModelDao;
+  private final JdbcUserModelDao userModelDao;
 
-  public UserService(UserModelDao userModelDao) {
+  public JdbcUserService(JdbcUserModelDao userModelDao) {
     this.userModelDao = userModelDao;
   }
 
   public void createUser(Long chatId, String name) {
     try {
-      UserModel user = userModelDao.getUserByChatId(chatId);
+      JdbcUserModel user = userModelDao.getUserByChatId(chatId);
 
       if (user == null) {
         userModelDao.createUser(chatId, name);

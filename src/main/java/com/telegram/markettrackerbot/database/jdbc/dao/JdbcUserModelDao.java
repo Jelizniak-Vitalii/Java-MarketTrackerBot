@@ -1,21 +1,21 @@
-package com.telegram.markettrackerbot.database.pureSql.dao;
+package com.telegram.markettrackerbot.database.jdbc.dao;
 
 import java.io.IOException;
 import java.sql.*;
 import java.util.List;
 import org.springframework.stereotype.Repository;
-import com.telegram.markettrackerbot.database.pureSql.db.DataBaseConnection;
-import com.telegram.markettrackerbot.database.pureSql.models.UserModel;
+import com.telegram.markettrackerbot.database.jdbc.db.DataBaseConnection;
+import com.telegram.markettrackerbot.database.jdbc.models.JdbcUserModel;
 
 @Repository
-public class UserModelDao {
+public class JdbcUserModelDao {
   private final DataBaseConnection databaseConnection;
 
-  public UserModelDao(DataBaseConnection databaseConnection) {
+  public JdbcUserModelDao(DataBaseConnection databaseConnection) {
     this.databaseConnection = databaseConnection;
   }
 
-  public UserModel getUserByChatId(Long chatId) throws IOException {
+  public JdbcUserModel getUserByChatId(Long chatId) throws IOException {
     String sql = "SELECT * FROM users WHERE chat_id = ?";
 
     try (
@@ -25,7 +25,7 @@ public class UserModelDao {
       statement.setLong(1, chatId);
 
       try (ResultSet resultSet = statement.executeQuery()) {
-        return resultSet.next() ? new UserModel(
+        return resultSet.next() ? new JdbcUserModel(
           resultSet.getLong("chat_id"),
           resultSet.getString("name")
         ) : null;
