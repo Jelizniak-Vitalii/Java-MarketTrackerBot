@@ -1,8 +1,8 @@
 package com.telegram.markettrackerbot.services;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -64,17 +64,30 @@ public class StockService {
   }
 
   public String getWatchListMessage(String[] stocks) {
-    StringBuilder message = new StringBuilder();
+    // Async realisations;
+    List<CompletableFuture<String>> futures = Arrays.stream(stocks)
+      .map(stock -> CompletableFuture.supplyAsync(() -> stockHttpService.getStockByTickerId(stock))
+        .thenApply(stockData -> stockData != null && !stockData.isEmpty() ? getStockInfoMessage(stockData) : null))
+      .collect(Collectors.toList());
 
-    for (String stock : stocks) {
-      String stockData = stockHttpService.getStockByTickerId(stock);
+    return futures.stream()
+      .map(CompletableFuture::join)
+      .filter(Objects::nonNull)
+      .collect(Collectors.joining("\n"));
 
-      if (stockData != null && !stockData.isEmpty()) {
-        message.append(getStockInfoMessage(stockData)).append("\n");
-      }
-    }
+  // Sync realisation
 
-    return message.toString();
+  //    StringBuilder message = new StringBuilder();
+  //
+  //    for (String stock : stocks) {
+  //      String stockData = stockHttpService.getStockByTickerId(stock);
+  //
+  //      if (stockData != null && !stockData.isEmpty()) {
+  //        message.append(getStockInfoMessage(stockData)).append("\n");
+  //      }
+  //    }
+  //
+  //    return message.toString();
   }
 
   public InlineKeyboardMarkup getStockInfoKeyboardMarkup(String data) {
