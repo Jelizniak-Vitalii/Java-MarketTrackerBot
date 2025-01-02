@@ -1,19 +1,21 @@
-package com.telegram.markettrackerbot.database.jdbc.models;
+package com.telegram.markettrackerbot.database.jdbcTemplate.models;
 
 import java.util.List;
 
-public class JdbcUserModel {
+public class JdbcTemplateUserModel {
   private String name;
   private Long chatId;
   private List<String> stocks;
 
-  public JdbcUserModel(Long chatId, String name, List<String> stocks) {
+  public JdbcTemplateUserModel() {}
+
+  public JdbcTemplateUserModel(Long chatId, String name, List<String> stocks) {
     this.chatId = chatId;
     this.name = name;
     this.stocks = stocks;
   }
 
-  public JdbcUserModel(Long chatId, String name) {
+  public JdbcTemplateUserModel(Long chatId, String name) {
     this(chatId, name, List.of());
   }
 
